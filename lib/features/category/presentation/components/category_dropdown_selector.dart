@@ -58,11 +58,11 @@ class _DropdownCategorySelectorState extends State<DropdownCategorySelector> {
         });
         widget.onCategorySelected(category);
       },
-      isExpanded: true, // This will make the dropdown take the full width
-      underline: const SizedBox(), // This will remove the underline
+      isExpanded: true,  
+      underline: const SizedBox(), 
       icon: const Padding(
         padding:
-            EdgeInsets.only(left: 8.0), // Adjust the left padding as needed
+            EdgeInsets.only(left: 8.0), 
         child: Icon(Icons.arrow_drop_down),
       ),
     );

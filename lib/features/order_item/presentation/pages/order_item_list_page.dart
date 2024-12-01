@@ -87,7 +87,7 @@ class _ProductListPage1State extends State<ProductListPage1> {
             hintText: 'Pesquisar...',
             hintStyle: TextStyle(
               color: Theme.of(context).colorScheme.primary,
-            ), // Change the color here
+            ), 
             prefixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),

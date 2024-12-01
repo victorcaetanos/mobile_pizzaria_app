@@ -4,7 +4,7 @@ import 'package:mobile_pizzaria_app/features/address/domain/entities/city.dart';
 class DropdownCitySelector extends StatefulWidget {
   final List<MyCity> cities;
   final MyCity? selectedCity;
-  final Function(MyCity?) onCitySelected; // Callback for selected city
+  final Function(MyCity?) onCitySelected; 
 
   const DropdownCitySelector({
     required this.cities,
@@ -57,11 +57,11 @@ class _DropdownCitySelectorState extends State<DropdownCitySelector> {
         });
         widget.onCitySelected(city);
       },
-      isExpanded: true, // This will make the dropdown take the full width
-      underline: const SizedBox(), // This will remove the underline
+      isExpanded: true,  
+      underline: const SizedBox(),  
       icon: const Padding(
         padding:
-            EdgeInsets.only(left: 8.0), // Adjust the left padding as needed
+            EdgeInsets.only(left: 8.0),  
         child: Icon(Icons.arrow_drop_down),
       ),
     );

@@ -32,7 +32,7 @@ class _DropdownCardSelectorState extends State<DropdownCardSelector> {
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.primary,
-          width: 1.0, // Thin border
+          width: 1.0,
         ),
         borderRadius: BorderRadius.circular(4.0),
       ),

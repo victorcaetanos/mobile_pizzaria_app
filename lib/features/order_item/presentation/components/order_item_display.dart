@@ -56,7 +56,7 @@ class ProductDisplay extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: Image.asset(
-                        product.imagePath, // Adjust the height as needed
+                        product.imagePath, 
                         fit: BoxFit.cover,
                       ),
                     ),
