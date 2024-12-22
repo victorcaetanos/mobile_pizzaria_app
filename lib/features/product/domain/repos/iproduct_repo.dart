@@ -7,6 +7,8 @@ abstract class IProductRepo {
   List<Product> getProducts();
   List<Product> getProductsByName(String stringToSearch);
   List<Product> getProductsByCategoryId(String categoryId);
+  List<Product> getProductsByNameAndCategoryId(
+      String stringToSearch, String categoryId);
   Product empty();
   void createProduct(
     String name,

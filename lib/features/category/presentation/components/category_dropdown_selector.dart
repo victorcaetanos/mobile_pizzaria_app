@@ -20,11 +20,16 @@ class DropdownCategorySelector extends StatefulWidget {
 
 class _DropdownCategorySelectorState extends State<DropdownCategorySelector> {
   MyCategory? selectedCategory;
+  late List<MyCategory> categoriesWithDefault;
 
   @override
   void initState() {
     super.initState();
     selectedCategory = widget.selectedCategory;
+    categoriesWithDefault = [
+      MyCategory(id: '0', name: 'Todas', isActive: true),
+      ...widget.categories,
+    ];
   }
 
   @override
@@ -39,7 +44,7 @@ class _DropdownCategorySelectorState extends State<DropdownCategorySelector> {
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
-      items: widget.categories.map((category) {
+      items: categoriesWithDefault.map((category) {
         return DropdownMenuItem<MyCategory>(
           value: category,
           child: Text(
@@ -58,11 +63,10 @@ class _DropdownCategorySelectorState extends State<DropdownCategorySelector> {
         });
         widget.onCategorySelected(category);
       },
-      isExpanded: true,  
-      underline: const SizedBox(), 
+      isExpanded: true,
+      underline: const SizedBox(),
       icon: const Padding(
-        padding:
-            EdgeInsets.only(left: 8.0), 
+        padding: EdgeInsets.only(left: 8.0),
         child: Icon(Icons.arrow_drop_down),
       ),
     );

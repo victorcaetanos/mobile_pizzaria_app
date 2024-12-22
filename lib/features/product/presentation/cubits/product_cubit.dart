@@ -35,20 +35,11 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
-  void getProductsByName(String stringToSearch) {
+  void filterProducts(String stringToSearch, String categoryId) {
     emit(ProductLoading());
     try {
-      final products = productRepo.getProductsByName(stringToSearch);
-      emit(ProductLoaded(products: _sortProduct(products)));
-    } catch (e) {
-      emit(ProductError(message: e.toString()));
-    }
-  }
-
-  void getProductsByCategoryId(String categoryId) {
-    emit(ProductLoading());
-    try {
-      final products = productRepo.getProductsByCategoryId(categoryId);
+      final products = productRepo.getProductsByNameAndCategoryId(
+          stringToSearch, categoryId);
       emit(ProductLoaded(products: _sortProduct(products)));
     } catch (e) {
       emit(ProductError(message: e.toString()));

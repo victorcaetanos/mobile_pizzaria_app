@@ -201,25 +201,38 @@ class ProductRepo implements IProductRepo {
 
   @override
   List<Product> getProductsByName(String stringToSearch) {
-    try {
-      return products
-          .where(
-            (product) => product.name.toLowerCase().contains(
-                  stringToSearch.toLowerCase(),
-                ),
-          )
-          .toList();
-    } catch (e) {
-      throw Exception('Erro ao buscar produto');
-    }
+    return _filterProducts(
+      (product) =>
+          product.name.toLowerCase().contains(stringToSearch.toLowerCase()),
+    );
   }
 
   @override
   List<Product> getProductsByCategoryId(String categoryId) {
+    if (categoryId == '0') {
+      return getProducts();
+    }
+    return _filterProducts(
+      (product) => product.category.id == categoryId,
+    );
+  }
+
+  @override
+  List<Product> getProductsByNameAndCategoryId(
+      String stringToSearch, String categoryId) {
+    if (categoryId == '0') {
+      return getProductsByName(stringToSearch);
+    }
+    return _filterProducts(
+      (product) =>
+          product.name.toLowerCase().contains(stringToSearch.toLowerCase()) &&
+          product.category.id == categoryId,
+    );
+  }
+
+  List<Product> _filterProducts(bool Function(Product) predicate) {
     try {
-      return products
-          .where((product) => product.category.id == categoryId)
-          .toList();
+      return products.where(predicate).toList();
     } catch (e) {
       throw Exception('Erro ao buscar produto');
     }

@@ -20,9 +20,9 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
+  final TextEditingController _searchController = TextEditingController();
   late final ProductCubit productCubit = context.read<ProductCubit>();
   MyCategory? selectedCategory;
-
   AppUser? currentUser;
 
   @override
@@ -42,13 +42,12 @@ class _ProductListPageState extends State<ProductListPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
-        title: const Center(
-          child: Text(
-            'Pizzas',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24,
-            ),
+        title: const Text(
+          'Pizzas',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
@@ -62,6 +61,7 @@ class _ProductListPageState extends State<ProductListPage> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Center(
@@ -94,18 +94,19 @@ class _ProductListPageState extends State<ProductListPage> {
     return Column(
       children: [
         TextField(
+          controller: _searchController,
           decoration: InputDecoration(
             hintText: 'Pesquisar...',
             hintStyle: TextStyle(
               color: Theme.of(context).colorScheme.primary,
-            ), 
+            ),
             prefixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
           onChanged: (value) {
-            productCubit.getProductsByName(value);
+            _filterProducts(value, selectedCategory?.id);
           },
         ),
         const SizedBox(height: 20.0),
@@ -117,17 +118,21 @@ class _ProductListPageState extends State<ProductListPage> {
             onCategorySelected: (MyCategory? category) {
               setState(() {
                 selectedCategory = category;
-                if (category != null) {
-                  productCubit.getProductsByCategoryId(category.id);
-                } else {
-                  productCubit.getProducts();
-                }
+                _filterProducts(_searchController.text, category?.id);
               });
             },
           ),
         ),
       ],
     );
+  }
+
+  void _filterProducts(String value, String? categoryId) {
+    if (categoryId != null) {
+      productCubit.filterProducts(value, categoryId);
+    } else {
+      productCubit.getProducts();
+    }
   }
 
   Expanded _buildProductListSection() {
