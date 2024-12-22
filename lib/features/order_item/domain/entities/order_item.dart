@@ -39,8 +39,6 @@ class OrderItem {
   }
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
-    
-      print('print asdasdas: ${json}');
     return OrderItem(
       id: json['id'] ?? '-1',
       orderId: json['order_id'] ?? '-1',
