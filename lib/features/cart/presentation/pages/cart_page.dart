@@ -8,6 +8,7 @@ import 'package:mobile_pizzaria_app/features/auth/presentation/cubits/auth_cubit
 import 'package:mobile_pizzaria_app/features/card/domain/entities/card.dart';
 import 'package:mobile_pizzaria_app/features/card/presentation/cubits/card_cubit.dart';
 import 'package:mobile_pizzaria_app/features/card/presentation/cubits/card_state.dart';
+import 'package:mobile_pizzaria_app/features/cart/domain/entities/cart.dart';
 import 'package:mobile_pizzaria_app/features/cart/presentation/components/address_dropdown_selector.dart';
 import 'package:mobile_pizzaria_app/features/cart/presentation/components/card_dropdown_selector.dart';
 import 'package:mobile_pizzaria_app/features/cart/presentation/components/cart_display.dart';
@@ -28,6 +29,8 @@ class _CartPageState extends State<CartPage> {
   late ProfileCubit profileCubit = context.read<ProfileCubit>();
   late AddressCubit addressCubit = context.read<AddressCubit>();
   late CardCubit cardCubit = context.read<CardCubit>();
+
+  final TextEditingController observationsController = TextEditingController();
 
   Address? selectedAddress;
   MyCard? selectedCard;
@@ -67,7 +70,6 @@ class _CartPageState extends State<CartPage> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              leading: Container(),
               centerTitle: true,
             ),
             body: SafeArea(
@@ -86,114 +88,23 @@ class _CartPageState extends State<CartPage> {
                       const SizedBox(height: 16),
                       CartDisplay(cart: state.cart),
                       const SizedBox(height: 16),
-                      TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Observações',
-                          border: OutlineInputBorder(),
-                        ),
-                        maxLines: 3,
-                        onChanged: (value) => notes = value,
-                      ),
+                      _buildNotesTextField(),
                       const SizedBox(height: 16),
                       const Align(
                         alignment: Alignment.centerLeft,
-                        child: Text('Endereço de entrega'),
+                        child: Text('Endereço de Entrega'),
                       ),
-                      BlocBuilder<AddressCubit, AddressState>(
-                          builder: (context, state) {
-                        if (state is AddressLoaded) {
-                          return DropdownAddressSelector(
-                            addresses: state.addresses,
-                            selectedAddress: selectedAddress,
-                            onAddressSelected: (address) => setState(
-                              () => selectedAddress = address,
-                            ),
-                          );
-                        }
-                        return DropdownAddressSelector(
-                          addresses: const [],
-                          selectedAddress: selectedAddress,
-                          onAddressSelected: (address) => setState(
-                            () => selectedAddress = address,
-                          ),
-                        );
-                      }),
+                      _buildAddressDropdown(),
                       const SizedBox(height: 16),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text('Forma de Pagamento'),
                       ),
-                      BlocBuilder<CardCubit, CardState>(
-                        builder: (context, state) {
-                          if (state is CardLoaded) {
-                            return DropdownCardSelector(
-                              cards: state.cards,
-                              selectedCard: selectedCard,
-                              onCardSelected: (card) => setState(
-                                () => selectedCard = card,
-                              ),
-                            );
-                          }
-                          return DropdownCardSelector(
-                            cards: const [],
-                            selectedCard: selectedCard,
-                            onCardSelected: (card) => setState(
-                              () => selectedCard = card,
-                            ),
-                          );
-                        },
-                      ),
+                      _buildCardDropdown(),
                       const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.tertiary,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Fazer pedido',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      _buildMakeOrderButton(context),
                       const SizedBox(height: 16),
-                      GestureDetector(
-                        onTap: () {
-                          // Handle cart clearing
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Limpar sacola',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      _buildClearCartButton(context),
                       const SizedBox(height: 16),
                     ],
                   ),
@@ -209,6 +120,119 @@ class _CartPageState extends State<CartPage> {
           );
         }
       },
+    );
+  }
+
+  TextField _buildNotesTextField() {
+    return TextField(
+      decoration: const InputDecoration(
+        labelText: 'Observações',
+        border: OutlineInputBorder(),
+      ),
+      maxLines: 3,
+      onChanged: (value) => notes = value,
+      controller: observationsController,
+    );
+  }
+
+  BlocBuilder<AddressCubit, AddressState> _buildAddressDropdown() {
+    return BlocBuilder<AddressCubit, AddressState>(
+      builder: (context, state) {
+        if (state is AddressLoaded) {
+          return DropdownAddressSelector(
+            addresses: state.addresses,
+            selectedAddress: selectedAddress,
+            onAddressSelected: (address) => setState(
+              () => selectedAddress = address,
+            ),
+          );
+        }
+        return DropdownAddressSelector(
+          addresses: const [],
+          selectedAddress: selectedAddress,
+          onAddressSelected: (address) => setState(
+            () => selectedAddress = address,
+          ),
+        );
+      },
+    );
+  }
+
+  BlocBuilder<CardCubit, CardState> _buildCardDropdown() {
+    return BlocBuilder<CardCubit, CardState>(
+      builder: (context, state) {
+        if (state is CardLoaded) {
+          return DropdownCardSelector(
+            cards: state.cards,
+            selectedCard: selectedCard,
+            onCardSelected: (card) => setState(
+              () => selectedCard = card,
+            ),
+          );
+        }
+        return DropdownCardSelector(
+          cards: const [],
+          selectedCard: selectedCard,
+          onCardSelected: (card) => setState(
+            () => selectedCard = card,
+          ),
+        );
+      },
+    );
+  }
+
+  GestureDetector _buildClearCartButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Handle cart clearing
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(
+            color: Theme.of(context).primaryColor,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: Text(
+            'Limpar sacola',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _buildMakeOrderButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.tertiary,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: Text(
+            'Fazer pedido',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

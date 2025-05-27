@@ -18,7 +18,13 @@ class ProductDialog extends StatefulWidget {
 }
 
 class _ProductDialogState extends State<ProductDialog> {
-  MySize? selectedSize;
+  late MySize selectedSize;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedSize = widget.product.sizes[0];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +93,7 @@ class _ProductDialogState extends State<ProductDialog> {
                     sizes: widget.product.sizes,
                     onSizeSelected: (value) {
                       setState(() {
-                        selectedSize = value;
+                        selectedSize = value!;
                       });
                     },
                     selectedSize: widget.product.sizes[0],
@@ -102,9 +108,9 @@ class _ProductDialogState extends State<ProductDialog> {
                   ),
                   onPressed: () {
                     final CartCubit cartCubit = context.read<CartCubit>();
-                    cartCubit.updateCart(
+                    cartCubit.updateCartItem(
                       widget.product,
-                      selectedSize ?? widget.product.sizes[0],
+                      selectedSize,
                     );
                     Navigator.pop(context);
                   },

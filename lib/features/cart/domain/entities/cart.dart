@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:mobile_pizzaria_app/features/address/data/address_repo.dart';
 import 'package:mobile_pizzaria_app/features/address/domain/entities/address.dart';
 import 'package:mobile_pizzaria_app/features/card/data/card_repo.dart';
@@ -6,22 +8,18 @@ import 'package:mobile_pizzaria_app/features/order_item/domain/entities/order_it
 import 'package:mobile_pizzaria_app/features/user/data/profile_user_repo.dart';
 import 'package:mobile_pizzaria_app/features/user/domain/entities/profile_user.dart';
 
-class Cart { 
-  final double total;
-  final double discount;
+class Cart {
   final ProfileUser user;
-  final String notes; 
+  final String notes;
   final Address address;
   final MyCard card;
   final List<OrderItem> items;
   final bool isActive;
   final DateTime createdAt;
 
-  Cart({ 
-    required this.total,
-    required this.discount,
+  Cart({
     required this.user,
-    required this.notes, 
+    required this.notes,
     required this.address,
     required this.card,
     required this.items,
@@ -30,11 +28,9 @@ class Cart {
   });
 
   Map<String, dynamic> toJson() {
-    return { 
-      'total': total,
-      'discount': discount,
+    return {
       'user': user,
-      'notes': notes, 
+      'notes': notes,
       'address': address,
       'card': card,
       'items': items,
@@ -44,16 +40,46 @@ class Cart {
   }
 
   factory Cart.fromJson(Map<String, dynamic> json) {
-    return Cart( 
-      total: json['total'] ?? 0.0,
-      discount: json['discount'] ?? 0.0,
+    return Cart(
       user: json['user'] ?? ProfileUserRepo().empty(),
-      notes: json['notes'] ?? '', 
+      notes: json['notes'] ?? '',
       address: json['address'] ?? AddressRepo().empty(),
       card: json['card'] ?? CardRepo().empty(),
       items: json['items'] ?? List.empty(),
       isActive: json['is_active'] ?? false,
       createdAt: json['created_at'],
     );
+  }
+
+  Cart copyWith({
+    ProfileUser? user,
+    String? notes,
+    Address? address,
+    MyCard? card,
+    List<OrderItem>? items,
+    bool? isActive,
+    DateTime? createdAt,
+  }) {
+    return Cart(
+      user: user ?? this.user,
+      notes: notes ?? this.notes,
+      address: address ?? this.address,
+      card: card ?? this.card,
+      items: items ?? this.items,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  double total() {
+    return items.fold(0, (sum, item) => sum + item.price);
+  }
+
+  double totalDiscount() {
+    return items.fold(0, (sum, item) => sum + item.discount);
+  }
+
+  double totalMinusDiscount() {
+    return total() - totalDiscount();
   }
 }

@@ -3,7 +3,7 @@ import 'package:mobile_pizzaria_app/features/size/domain/entities/size.dart';
 
 class DropdownSizeSelector extends StatefulWidget {
   final List<MySize> sizes;
-  final MySize? selectedSize;
+  final MySize selectedSize;
   final Function(MySize?) onSizeSelected;
 
   const DropdownSizeSelector({

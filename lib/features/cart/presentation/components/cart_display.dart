@@ -12,7 +12,6 @@ class CartDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 200.0,
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -27,17 +26,39 @@ class CartDisplay extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 2.0),
-          const Text(
-            '1x Pizza Marguerita - R\$ 20.00\n'
-            '1x Pizza pepperoni - R\$ 20.00\n'
-            '1x Frango com catupiry - R\$ 20.00\n',
-            style: TextStyle(fontSize: 16.0),
-          ),
+            Column(
+            children: cart.items.map((item) {
+              return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                onTap: () {
+                  // Handle item removal
+                },
+                child: const Icon(Icons.remove_circle, color: Colors.red),
+                ),
+                Text(
+                '${item.quantity}x ${item.product.name} - R\$ ${item.price.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+                ),
+                GestureDetector(
+                onTap: () {
+                  // Handle item addition
+                },
+                child: const Icon(Icons.add_circle, color: Colors.green),
+                ),
+              ],
+              );
+            }).toList(),
+            ),
           const SizedBox(height: 8.0),
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
-              'Total: R\$ 60.00',
+              'Total: R\$ ${cart.total().toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,

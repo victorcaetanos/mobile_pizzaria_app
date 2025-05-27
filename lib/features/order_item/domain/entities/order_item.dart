@@ -50,4 +50,26 @@ class OrderItem {
       isActive: json['is_active'] ?? false,
     );
   }
+
+  OrderItem copyWith({
+    String? id,
+    String? orderId,
+    Product? product,
+    int? quantity,
+    MySize? size,
+    double? price,
+    double? discount,
+    bool? isActive,
+  }) {
+    return OrderItem(
+      id: id ?? this.id,
+      orderId: orderId ?? this.orderId,
+      product: product ?? this.product,
+      quantity: quantity ?? this.quantity,
+      size: size ?? this.size,
+      price: price ?? this.price,
+      discount: discount ?? this.discount,
+      isActive: isActive ?? this.isActive,
+    );
+  }
 }

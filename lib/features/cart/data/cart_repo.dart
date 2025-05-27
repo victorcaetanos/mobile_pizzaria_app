@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:mobile_pizzaria_app/features/address/data/address_repo.dart';
 import 'package:mobile_pizzaria_app/features/card/data/card_repo.dart';
@@ -15,8 +16,6 @@ class CartRepo implements ICartRepo {
   @override
   Cart empty() {
     return Cart(
-      total: 0.0,
-      discount: 0.0,
       user: userRepo.empty(),
       notes: '',
       address: AddressRepo().empty(),
@@ -29,14 +28,15 @@ class CartRepo implements ICartRepo {
 
   @override
   Future<Cart> getCart() async {
+    log('Before SharedPreferences');
     final prefs = await SharedPreferences.getInstance();
+    log('after SharedPreferences');
     final cartJson = prefs.getString(_cartKey);
     if (cartJson == null) return empty();
 
     final cartMap = jsonDecode(cartJson);
+    log(cartMap.toString());
     return Cart(
-      total: cartMap['total'],
-      discount: cartMap['discount'],
       user: await userRepo.getProfileUser() ?? userRepo.empty(),
       notes: cartMap['notes'],
       address: AddressRepo().getAddress(cartMap['addressId']),
@@ -53,8 +53,6 @@ class CartRepo implements ICartRepo {
   Future<void> updateCart(Cart cart) async {
     final prefs = await SharedPreferences.getInstance();
     final cartJson = jsonEncode({
-      'total': cart.total,
-      'discount': cart.discount,
       'notes': cart.notes,
       'addressId': cart.address.id,
       'cardId': cart.card.id,
